@@ -1,0 +1,160 @@
+﻿
+@model List<Kategori>
+
+@{
+    ViewBag.Title = "Kategoriler";
+}
+
+<div class="container">
+    <h2>Kategoriler</h2>
+
+
+    @if (TempData["hata"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+
+            @TempData["hata"]
+
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    @if (TempData["mesaj"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+
+            @TempData["mesaj"]
+
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    <form class="form-inline" action="@Url.Action("Ekle", "Kategoriler")" method="post">
+
+        @Html.AntiForgeryToken()
+
+        <label class="sr-only" for="inlineFormInputName2">Name</label>
+        <input type="text" name="KategoriAd" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="Kategori Adı" required="required">
+        <button type="submit" class="btn btn-success mb-2">EKLE</button>
+    </form>
+
+    <table class="table table-success table-striped">
+        <thead>
+            <tr>
+                <th>Kategori Id</th>
+                <th>Kategori Adı</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.KategoriAd</td>
+                    <td>
+                        <a href="#" class="btn btn-success" data-toggle="modal" data-target="#exampleModalCenter"
+                           data-kategori-id="@item.Id" data-kategori-ad="@item.KategoriAd">
+                            <i class="fas fa-edit"></i>
+                        </a>
+
+                        <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#silmeModal"
+                           data-kategori-id="@item.Id" data-kategori-ad="@item.KategoriAd">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@*silme modal*@
+<div class="modal fade" id="silmeModal" tabindex="-1" role="dialog" aria-labelledby="silmeModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="silmeModalCenterTitle">Silme Onayı</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="@Url.Action("Sil", "Kategoriler")" method="post">
+
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="kategoriSilId" name="Id" />
+                    <p>
+                        &quot;<span id="kategoriSilAd"></span> &quot; adlı kategoriyi silmek istediğinize emin misiniz?
+                    </p>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Evet</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Hayır</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*düzenle modal*@
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Kategori Düzenle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="@Url.Action("Duzenle", "Kategoriler")" method="post">
+
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="kategoriDuzenleId" name="Id" />
+                    <div class="form-group">
+                        <label>Kategori Adı</label>
+                        <input type="text" required id="kategoriDuzenleAd" name="kategoriAd" class="form-control" />
+                    </div>
+
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-success">Değişiklikleri Kaydet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $("#exampleModalCenter").on("show.bs.modal", function (event) {
+
+            var button = $(event.relatedTarget);
+
+            $("#kategoriDuzenleId").val(button.data("kategori-id"));
+            $("#kategoriDuzenleAd").val(button.data("kategori-ad"));
+
+        });
+
+        $("#silmeModal").on("show.bs.modal", function (event) {
+
+            var button = $(event.relatedTarget);
+
+            $("#kategoriSilId").val(button.data("kategori-id"));
+            $("#kategoriSilAd").text(button.data("kategori-ad"));
+
+        });
+
+    </script>
+}
+
+
+
+
+

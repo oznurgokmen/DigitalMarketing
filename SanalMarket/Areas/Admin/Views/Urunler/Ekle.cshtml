@@ -1,0 +1,46 @@
+﻿
+@model Urun
+
+@{
+    ViewBag.Title = "Yeni Ürün";
+}
+
+<div class="container">
+
+    <h2>Yeni Ürün</h2>
+
+    @using (Html.BeginForm("Ekle", "Urunler", FormMethod.Post, new { enctype= "multipart/form-data"}))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.KategoriId)
+            @Html.DropDownListFor(x => x.KategoriId, null, "Seçiniz", new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.KategoriId, null, new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.UrunAd)
+            @Html.TextBoxFor(x => x.UrunAd, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.UrunAd, null, new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.Birimfiyat)
+            @Html.TextBoxFor(x => x.Birimfiyat, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Birimfiyat, null, new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            <label for="dosya">Ürün Resmi</label>
+            <input type="file" class="form-control-file" name="dosya" id="dosya" />
+        </div>
+
+        <button type="submit" class="btn btn-success mb-2" >Kaydet</button>
+
+    }
+
+</div>
+
+
+

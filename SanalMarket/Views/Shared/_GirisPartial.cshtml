@@ -1,0 +1,17 @@
+﻿
+@if (User.Identity.IsAuthenticated)
+{
+    <a href="javascript:document.getElementById('LogOffForm').submit()" class="btn btn-success btn-sm ml-3">Çıkış</a>
+
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "LogOffForm"}))
+    {
+        @Html.AntiForgeryToken()
+    }
+}
+
+else
+{
+    <a href="@Url.Action("Login", "Account")" class="btn btn-success btn-sm ml-3">Giriş</a>
+}
+
+

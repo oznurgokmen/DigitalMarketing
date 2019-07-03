@@ -1,0 +1,192 @@
+﻿
+@model OdemeYapVM
+
+@{
+    ViewBag.HeadTitle = "Ödeme Yap";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4 order-md-2 mb-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Sepetiniz</span>
+                <span class="badge badge-success badge-pill">
+                    @SepetBilgisi.OgeAdet()
+                </span>
+            </h4>
+            <ul class="list-group mb-3">
+
+                @foreach (var item in SepetBilgisi.Ogeler())
+                {
+                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                        <div>
+                            <h6 class="my-0">@item.UrunAd</h6>
+                            <small class="text-muted">x @item.Adet</small>
+                        </div>
+                        <span class="text-muted">@item.Tutar()₺</span>
+                    </li>
+                }
+
+                <li class="list-group-item d-flex justify-content-between bg-light">
+                    <div class="text-success">
+                        <h6 class="my-0">İndirim Kodu</h6>
+                        <small>ELDJ54GFGBF</small>
+                    </div>
+                    <span class="text-success"></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Toplam Tutar</span>
+                    <strong>@SepetBilgisi.ToplamTutar()₺</strong>
+                </li>
+            </ul>
+
+            <form class="card p-2">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="İndirim Kodu">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-secondary">Kullan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-8 order-md-1">
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                @Html.ValidationSummary(null, new { @class = "alert alert-danger" })
+            }
+
+            <h4 class="mb-3">Fatura/Teslimat Adresi</h4>
+            <form action="@Url.Action("OdemeYap", "Sepet")" method="post" class="needs-validation" novalidate>
+
+                @Html.AntiForgeryToken()
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        @Html.LabelFor(x => x.Ad)
+                        @Html.TextBoxFor(x => x.Ad, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.Ad)
+
+                    </div>
+                    <div class="col-md-6 mb-3">
+
+                        @Html.LabelFor(x => x.Soyad)
+                        @Html.TextBoxFor(x => x.Soyad, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.Soyad)
+
+                    </div>
+
+                </div>
+
+                <div class="mb-3">
+
+                    @Html.LabelFor(x => x.Email)
+                    @Html.TextBoxFor(x => x.Email, new { @class = "form-control", placeholder = "adiniz@ornek.com" })
+                    @Html.ValidationMessageFor(x => x.Email)
+
+                </div>
+
+                <div class="mb-3">
+
+                    @Html.LabelFor(x => x.Adres1)
+                    @Html.TextBoxFor(x => x.Adres1, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Adres1)
+
+                </div>
+
+                <div class="mb-3">
+
+                    @Html.LabelFor(x => x.Adres2)
+                    @Html.TextBoxFor(x => x.Adres2, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Adres2)
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+
+                        @Html.LabelFor(x => x.SehirId)
+                        @Html.DropDownListFor(x => x.SehirId, null, "Seçiniz", new { @class = "custom-select d-block w-100" })
+                        @Html.ValidationMessageFor(x => x.SehirId)
+
+                    </div>
+                    <div class="col-md-3 mb-3">
+
+                        @Html.LabelFor(x => x.PostaKodu)
+                        @Html.TextBoxFor(x => x.PostaKodu, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.PostaKodu)
+
+                    </div>
+                </div>
+                <hr class="mb-4">
+                <div class="custom-control custom-checkbox">
+
+                    @Html.CheckBoxFor(x => x.AdresimeGonder, new { @class = "custom-control-input" })
+                    @Html.LabelFor(x => x.AdresimeGonder, new { @class = "custom-control-label" })
+
+                </div>
+                <div class="custom-control custom-checkbox">
+
+                    @Html.CheckBoxFor(x => x.BilgileriHatirla, new { @class = "custom-control-input" })
+                    @Html.LabelFor(x => x.BilgileriHatirla, new { @class = "custom-control-label" })
+
+                </div>
+                <hr class="mb-4">
+
+                <h4 class="mb-3">Ödeme Bilgileri</h4>
+
+                <div class="d-block my-3">
+
+                    @Html.LabelFor(x => x.KKTur)
+                    @Html.EnumDropDownListFor(x => x.KKTur, new { @class = "form-control" })
+
+                    @*Zorunlu yapmak için*@
+                    @Html.ValidationMessageFor(x => x.KKTur)
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+
+                        @Html.LabelFor(x => x.KKSahibi)
+                        @Html.TextBoxFor(x => x.KKSahibi, new { @class = "form-control" })
+                        <small class="text-muted">Kartta Gözüktüğü Şekilde</small>
+                        @Html.ValidationMessageFor(x => x.KKSahibi)
+
+                    </div>
+                    <div class="col-md-6 mb-3">
+
+                        @Html.LabelFor(x => x.KKNo)
+                        @Html.TextBoxFor(x => x.KKNo, new { @class = "form-control" })
+                        <small class="text-muted">16 Hane Olmalı</small>
+                        @Html.ValidationMessageFor(x => x.KKNo)
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+
+                        @Html.LabelFor(x => x.KKSonKullanmaTarihi)
+                        @Html.TextBoxFor(x => x.KKSonKullanmaTarihi, new { @class = "form-control" })
+                        <small class="text-muted">Ay/Yıl</small>
+                        @Html.ValidationMessageFor(x => x.KKSonKullanmaTarihi)
+
+                    </div>
+                    <div class="col-md-3 mb-3">
+
+                        @Html.LabelFor(x => x.KKCvv)
+                        @Html.TextBoxFor(x => x.KKCvv, new { @class = "form-control" })
+                        <small class="text-muted">Kartın Arkasındaki 3 Haneli Numara</small>
+                        @Html.ValidationMessageFor(x => x.KKCvv)
+
+                    </div>
+                </div>
+                <hr class="mb-4">
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Ödemeyi Gerçekleştir</button>
+            </form>
+        </div>
+    </div>
+</div>
+
